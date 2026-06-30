@@ -1,0 +1,31 @@
+baseURL = "https://go-ruby-logger.github.io/"
+title = "go-ruby-logger"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap", "404"]
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[[params.phases]]
+  name = "Severity model"
+  status = "ready"
+  blurb = "`DEBUG=0 INFO=1 WARN=2 ERROR=3 FATAL=4 UNKNOWN=5`, the `SeverityLabel` mapping (`\"DEBUG\"`..`\"FATAL\"`, then `\"ANY\"`), and `CoerceSeverity` — MRI's `Severity.coerce` from an int or a `\"warn\"`/`\"FATAL\"` string."
+[[params.phases]]
+  name = "Default formatter"
+  status = "ready"
+  blurb = "MRI's `\"%.1s, [%s #%d] %5s -- %s: %s\\n\"` with the `\"%Y-%m-%dT%H:%M:%S.%6N\"` timestamp, the `datetime_format` override and the `msg2str` coercion — pure over an **injected** clock and pid, so a fixed instant reproduces MRI's exact bytes."
+[[params.phases]]
+  name = "Level gating"
+  status = "ready"
+  blurb = "`Add` (alias `Log`) formats nothing when there is no sink or `severity < level`; the `Debug`/`Info`/`Warn`/`Error`/`Fatal`/`Unknown` helpers, the `<<`-style raw `Write`, and the `DebugQ`..`FatalQ` predicates all mirror MRI."
+[[params.phases]]
+  name = "Rotation policy"
+  status = "ready"
+  blurb = "A pure decision, no IO: `ShouldRotateBySize` + the `ShiftAgeSequence` rename plan for integer `shift_age`; `NextRotateTime`, `ShouldRotateByPeriod` and the `PeriodAgeFile` rotated-name (with MRI's `.1`..`.99` collision suffix) for daily/weekly/monthly periods."
+[[params.phases]]
+  name = "Compute core, host IO"
+  status = "ready"
+  blurb = "The library hands back the line bytes and the rename plan; opening the file, writing the bytes, renaming on rotation and reading the wall clock are the **host's** job, injected via the `Sink`, `Now` and `Pid` seams."
+[[params.phases]]
+  name = "Differential oracle & coverage"
+  status = "ready"
+  blurb = "The line bytes, `datetime_format` override, `Exception` coercion, end-to-end gating, the full severity range and the rotation schedule are each compared byte-for-byte against the system `ruby`; 100% coverage, gofmt + go vet clean, green across all six 64-bit Go arches and three OSes."
